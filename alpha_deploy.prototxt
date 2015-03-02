@@ -1,35 +1,9 @@
 name: "alpha"
-layers {
-  name: "alpha"
-  type: IMAGE_DATA
-  top: "data"
-  top: "label"
-  image_data_param {
-    source: "training_index.txt"
-    batch_size: 500
-    is_color: false
-  }
-  transform_param {
-    scale: 0.00390625
-  }
-  include: { phase: TRAIN }
-}
-layers {
-
-  name: "alpha"
-  type: IMAGE_DATA
-  top: "data"
-  top: "label"
-  image_data_param {
-    source: "test_index.txt"
-    batch_size: 500
-    is_color: false
-  }
-  transform_param {
-    scale: 0.00390625
-  }
-  include: { phase: TEST }
-}
+input: "data"
+input_dim: 1
+input_dim: 1
+input_dim: 28
+input_dim: 28
 
 layers {
   name: "conv1"
@@ -69,16 +43,10 @@ layers {
     }
   }
 }
-layers{
-			name: "dropout"
-			type: DROPOUT
-			bottom: "conv2"
-			top: "dropout"
-} 
 layers {
   name: "ip1"
   type: INNER_PRODUCT
-  bottom: "dropout"
+  bottom: "conv2"
   top: "ip1"
   blobs_lr: 1
   blobs_lr: 2
@@ -116,17 +84,8 @@ layers {
   }
 }
 layers {
-  name: "accuracy"
-  type: ACCURACY
+  name: "prob"
+  type: SOFTMAX
   bottom: "ip2"
-  bottom: "label"
-  top: "accuracy"
-#  include: { phase: TEST }
-}
-layers {
-  name: "loss"
-  type: SOFTMAX_LOSS
-  bottom: "ip2"
-  bottom: "label"
-  top: "loss"
+  top: "prob"
 }
